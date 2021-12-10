@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Monster_Hunter
 {
-    public class Shield
+    public class Shield : IGadget
     {
         private int giDefenceStrength; //global integer for defence power of the shield
         private const int MIN_DEFENCE = 3, MAX_DEFENCE = 6; //range of defence power

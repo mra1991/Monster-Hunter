@@ -14,6 +14,7 @@ namespace Monster_Hunter
     {
         private POTION_TYPE geType; //global enumeration for type of the potion
 
+        public const int POTION_EFFECT_MILLISEC = 10000; //effects of the potion will last 10 seconds
         public Potion()
         {
             try

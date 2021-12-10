@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Monster_Hunter
 {
-    public class Pickaxe
+    public class Pickaxe : IGadget
     {
         private const int BREAK_CHANCE_ONE_IN = 3;
 

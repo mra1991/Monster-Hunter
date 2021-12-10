@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Monster_Hunter
 {
-    public class Sword
+    public class Sword : IGadget
     {
         private int giOffenceStrength; //global integer for offence power of the sword
         private const int MIN_OFFENCE = 5, MAX_OFFENCE = 10; //range of offence power

@@ -1,5 +1,7 @@
 ﻿//Revision history:
-//Mohammadreza Abolhassani      2021-12-05      Created the Map object.
+//Mohammadreza Abolhassani      2021-12-05      Created the Map object. Did not finish LoadMapFromFile method (refrence to hunter object and monsters object missing)
+//Mohammadreza Abolhassani      2021-12-06      Minor progress made on LoadMapFromFile method.
+//Mohammadreza Abolhassani      2021-12-09      Finished LoadMapFromFile method.
 
 using System;
 using System.Collections.Generic;
@@ -115,9 +117,14 @@ namespace Monster_Hunter
         //property to provide public get and private set for the array of string containing the list of .map filenames.
         public string[] MapFileNames { get => gsMapFileNames; private set => gsMapFileNames = value; }
 
+        private Hunter goHunter;
+        private Monsters goMonsters;
+        public Hunter GoHunter { get => goHunter; }
+        public Monsters GoMonsters { get => goMonsters; }
+
         //private boolean method that gets string for filename and loads the map from that file into the two dimentional char array
         //If the map is loaded successfully returns true, otherwise returns false. 
-        private bool LoadMapFromFile(string psFilename) //parameter string filename must come from the array of strings (gsMapFileNames)  
+        private bool LoadMapFromFile(string psFilename, Hunter poHunter, Monsters poMonsters) //parameter string filename must come from the array of strings (gsMapFileNames)  
         {
             try
             {
@@ -126,11 +133,20 @@ namespace Monster_Hunter
 
                 //validation of map dimentions
                 Height = lsLines.Length; //the number of lines in the file is the height of the map
+                for (int i = 0; i < Height - 1; i++) //for each line in the map file except the last one
+                {
+                    if (lsLines[i].Length != lsLines[i + 1].Length) //if that line has a different length than the next one
+                    {
+                        gsValidationError = "Not all lines in the map file " + psFilename + " have the same length.";
+                        return false; //halt loading
+                    }
+                }
                 Width = lsLines[0].Length; //the length of any line is the width of the map
                 if (ValidationError != "") //check if there was any validation error while setting the dimentions of the map
                 {
                     return false; //map file doesn't have the currect format or dimentions exceed limitations. halt loading.
                 }
+
                 //now that dimentions are valid
                 gcMap = new char[Height, Width]; //create array of character representing the map
 
@@ -153,14 +169,12 @@ namespace Monster_Hunter
                             if (lsLines[i].ElementAt(j) == 'H') //H is for Hunter
                             {
                                 //Updade the position of the Hunter
-                                //..
-                                //..
+                                poHunter = new Hunter(j, i, Height, Width, this);
                             }
                             else if (lsLines[i].ElementAt(j) == 'M') //M is for Monster
                             {
                                 //create a new Monster object at this coordinates and pass it to the monsters onject as a parameter
-                                //...
-                                //...
+                                poMonsters.AddMonster(new Monster(j, i, Height, Width, this));
                             }
                             else
                             {
