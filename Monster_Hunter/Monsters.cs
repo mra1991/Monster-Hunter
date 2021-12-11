@@ -14,6 +14,9 @@ namespace Monster_Hunter
         {
             gListMonsters = new List<Monster>();
         }
+
+        public List<Monster> GListMonsters { get => gListMonsters;}
+
         public void AddMonster(Monster poMonster)
         {
             gListMonsters.Add(poMonster);

@@ -1,5 +1,8 @@
 ﻿//Revision history:
 //Mohammadreza Abolhassani      2021-12-06      Created the Hunter object.
+//Mohammadreza Abolhassani      2021-12-09      Finished implementing the Hunter object.
+//Mohammadreza Abolhassani      2021-12-11      Added the AssignMap function to fix the problem caused in the method LoadMapFromFile() of class Map.
+
 
 using System;
 using System.Collections.Generic;
@@ -150,32 +153,41 @@ namespace Monster_Hunter
 
             //set the global object for state to normal state
             goState = new NormalState(HP, Attack, Armor, MilliseconsBetweenMoves);
+
+            //create list of strings to hold the attack logs
+            gsAttackLogs = new List<string>();
         }
 
-        private String AttackMonster(Monster poMonster)
+        public List<string> gsAttackLogs;
+
+        private string AttackMonster(Monster poMonster)
         {
             string sLog = this.Name + " attacks a monster ";
-            //battle
+            //attacking monster
             //damage inflicted is player's attack minus monster's armor (negative values won't be applyed)
             poMonster.TakeDamage(this.Attack - poMonster.Armor);
             if (poMonster.IsDead)
             {
                 sLog += "and kills it.";
+                poMonster = null; //let gc collect the dead monster
                 return sLog;
             }
-            if(goGadget is Sword)
+            if (goGadget is Sword) //if hunter has a sword
             {
+                //more damage inflicted on monster with the sword
                 poMonster.TakeDamage((goGadget as Sword).OffenceStrength);
-            }
-            if (goGadget.Break()) //see if the sword breaks 
-            {
-                goGadget = null; //throw it out
+                if (goGadget.Break()) //see if the sword breaks 
+                {
+                    goGadget = null; //throw it out
+                }
             }
             if (poMonster.IsDead)
             {
                 sLog += "with a sword and kills it.";
+                poMonster = null; //let gc collect the dead monster
                 return sLog;
             }
+            sLog += "with a sword. Monsters remaining HP = " + poMonster.HP.ToString();
             return sLog;
         }
 
@@ -183,21 +195,21 @@ namespace Monster_Hunter
         public override bool Move(int piX, int piY)
         {
             // if new coordinates are out of bounds, the move won't be possible
-            if (piX < 0 || piY < 0 || piX >  - 1 || piY > giHeight - 1)
+            if (piX < 0 || piY < 0 || piX >  giWidth - 1 || piY > giHeight - 1)
             {
                 return false;
             }
 
             //go through the list of monsters and see if there is any at this position
             List<Monster> monstersList = GoMap.GoMonsters.FindMonsters(piX, piY);
-            foreach(Monster oM in monstersList)
+
+            foreach(Monster oM in monstersList) //for each monster in that position
             {
-                string sFightLog = AttackMonster(oM);
-                //save the battle log in a file
-                //...
+                //attack the monster and add the string result to list of attack logs
+                gsAttackLogs.Add(AttackMonster(oM));
             }
 
-            //if there's no monster there, there can be:
+            //on the grid, there can be:
             switch (GoMap.gcMap[piX, piY])
             {
                 case '#': //Wall
@@ -234,6 +246,7 @@ namespace Monster_Hunter
                 default:
                     break;
             }
+            GoMap.gcMap[piX, piY] = ' '; //empty the space before moving into it
             this.giPosX = piX; //update hunter's position along x axis
             this.giPosY = piY; //update hunter's position along y axis
             return true; //successfully moved
@@ -268,6 +281,15 @@ namespace Monster_Hunter
         private void BackToNormal()
         {
             this.State = goLastNormalSate;
+        }
+
+        public void AssignMap(int piX,int piY,int piWidth, int piHeight, Map poMap)
+        {
+            this.giPosX = piX;
+            this.giPosY = piY;
+            this.giWidth = piWidth;
+            this.giHeight = piHeight;
+            this.goMap = poMap;
         }
     }
 }
