@@ -17,5 +17,10 @@ namespace Monster_Hunter
             //decrease freezeTime by 50%
             freezeTime /= 2;
         }
+
+        public override string ToString()
+        {
+            return "Fast";
+        }
     }
 }

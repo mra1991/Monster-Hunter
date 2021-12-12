@@ -141,6 +141,7 @@ namespace Monster_Hunter
             }
         }
         private IGadget goGadget = null; //a gadget can be a sword, shield or pickaxe
+        public IGadget GoGadget { get => goGadget; set => goGadget = value; }
 
         private bool gbGoalFound = false; //global boolean for winning the game
         public bool GoalFound { get => gbGoalFound; } //read only access to gbGoalFound
@@ -166,6 +167,11 @@ namespace Monster_Hunter
             //attacking monster
             //damage inflicted is player's attack minus monster's armor (negative values won't be applyed)
             poMonster.TakeDamage(this.Attack - poMonster.Armor);
+            //your score is the damage you inflict on the monsters
+            if (this.Attack - poMonster.Armor > 0)
+            {
+                giScore += (this.Attack - poMonster.Armor);
+            }
             if (poMonster.IsDead)
             {
                 sLog += "and kills it.";
@@ -176,9 +182,11 @@ namespace Monster_Hunter
             {
                 //more damage inflicted on monster with the sword
                 poMonster.TakeDamage((goGadget as Sword).OffenceStrength);
+                giScore += (goGadget as Sword).OffenceStrength;
                 if (goGadget.Break()) //see if the sword breaks 
                 {
                     goGadget = null; //throw it out
+                    gsAttackLogs.Add("Your sword broke while attacking a monster.");
                 }
             }
             if (poMonster.IsDead)
@@ -217,11 +225,13 @@ namespace Monster_Hunter
                     if(goGadget is Pickaxe)
                     {
                         GoMap.gcMap[piX, piY] = ' '; //break the wall
+                        gsAttackLogs.Add("You destroyed a wall block using your pickaxe.");
                         this.giPosX = piX; //update hunter's position along x axis
                         this.giPosY = piY; //update hunter's position along y axis
                         if (goGadget.Break()) //check if the pickaxe breaks
                         {
                             goGadget = null; //throw it away!
+                            gsAttackLogs.Add("Your pickaxe broke while destroying a wall block.");
                         }
                         return true; //successfully moved
                     }
@@ -232,14 +242,19 @@ namespace Monster_Hunter
                     break;
                 case 'w': //Sword
                     goGadget = new Sword();
+                    gsAttackLogs.Add("You got a new sword.");
                     break;
                 case 'h': //Shield
                     goGadget = new Shield();
+                    gsAttackLogs.Add("You got a new shield.");
                     break;
                 case 'x': //Pickaxe
                     goGadget = new Pickaxe();
+                    gsAttackLogs.Add("You got a new pickaxe.");
                     break;
                 case 'p': //Potion
+                    DrinkPotion(new Potion());
+                    gsAttackLogs.Add("You drank a potion.");
                     break;
                 case ' ': //Empty
                     break;

@@ -22,5 +22,10 @@ namespace Monster_Hunter
             giArmor /= 2; //aromor decreases 50%
             freezeTime *= 5; freezeTime /= 4; //increase freezTime by 25%
         }
+
+        public override string ToString()
+        {
+            return "Poisoned";
+        }
     }
 }

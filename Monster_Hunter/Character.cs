@@ -82,6 +82,10 @@ namespace Monster_Hunter
                 //set the character to full health
                 HP = MAX_HP;
 
+                //set attack and armor to random value not more than max
+                this.Attack = Randomizer.Instance().Next(MAX_ARMOR + 1, MAX_ATTACK + 1); //attack should be more than armor
+                this.Armor = Randomizer.Instance().Next(MAX_ARMOR + 1);
+
                 //store a reference to the map to be used in Move(int, int) method.
                 goMap = poMap; 
             }
@@ -143,7 +147,7 @@ namespace Monster_Hunter
         public bool IsDead { get => this.HP <= 0; } // property to check if the character is dead
 
         protected int giAttack; //global integer for character's Attack Power (or Strength)
-        const int MAX_ATTACK = 7; //max amount for giAttack
+        public const int MAX_ATTACK = 7; //max amount for giAttack
         public int Attack  //property with public get and protected set with validation for Attack
         {
             get
@@ -185,7 +189,7 @@ namespace Monster_Hunter
         }
 
         protected int giArmor; //global integer for character's Armor (or Defense)
-        const int MAX_ARMOR = 4; //max amount for giArmor
+        public const int MAX_ARMOR = 4; //max amount for giArmor
         public int Armor  //property with public get and protected set with validation for Armor
         {
             get

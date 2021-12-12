@@ -17,5 +17,10 @@ namespace Monster_Hunter
         {
             gbIsInvisible = false;
         }
+
+        public override string ToString()
+        {
+            return "Invisible";
+        }
     }
 }

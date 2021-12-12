@@ -49,5 +49,10 @@ namespace Monster_Hunter
 
         //property with public getter only, for offence power of the sword
         public int OffenceStrength { get => giOffenceStrength; }
+
+        public override string ToString()
+        {
+            return "[Sword] strength:" + this.OffenceStrength;
+        }
     }
 }

@@ -21,5 +21,10 @@ namespace Monster_Hunter
             giAttack *= 2; //attack to 2 times power
             giArmor *= 3; giArmor /= 2; //aromor to 1.5 times power
         }
+
+        public override string ToString()
+        {
+            return "Strong";
+        }
     }
 }

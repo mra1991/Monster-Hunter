@@ -25,7 +25,11 @@ namespace Monster_Hunter_Console
             goHunter = new Hunter(0, 0); //create the global object hunter temporarily at position (0, 0) without attaching a map to it
 
             Console.WriteLine("\tWelcome to the Monster Hunter console game.\n");
-            Console.WriteLine("\tFirst, pick a map to play in:");
+
+            Console.WriteLine("\tPlease enter your name.");
+
+            PromptPlayerName();
+            Console.WriteLine("\tPick a map to play in:");
             //show list of available map files
             for (int i = 0; i < goMap.MapFileNames.Length; i++)
             {
@@ -54,17 +58,31 @@ namespace Monster_Hunter_Console
             moveMonstersThread.Start();
 
             ConsoleKeyInfo userInput; //to hold user input
-            while (!gbQuit && !goHunter.IsDead)
+            //main loop. repeat until player hits Escape, dies or wins
+            while (!gbQuit && !goHunter.IsDead && !goHunter.GoalFound)
             {
-                Thread.Sleep(goHunter.MilliseconsBetweenMoves);
+                Thread.Sleep(goHunter.MilliseconsBetweenMoves); //wait for player's freeze time to finish
                 Console.SetCursorPosition(0, 0); //put the curser top left so it won't distract the user
                 userInput = Console.ReadKey(); //receive user input
+                //write blank to erase users input from screen
+                Console.SetCursorPosition(0, 0);
+                Console.Write(" ");
                 ProcessPlayerInput(userInput);
             }
+            gbQuit = true;
             if (goHunter.IsDead)
             {
-                Console.WriteLine();
+                Console.SetCursorPosition(0, 0);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\tYou're Dead! Press any key to Quit...");
             }
+            else if (goHunter.GoalFound)
+            {
+                Console.SetCursorPosition(0, 0);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\tYou Won! Press any key to Quit...");
+            }
+            Console.ReadKey();
         }
 
         //Thread to move the monsters every 2 seconds
@@ -158,6 +176,18 @@ namespace Monster_Hunter_Console
                 }
             } while (sValidationError != ""); //repeat only if input is invalid
             return iMapIndex;
+        }
+ 
+        public static void PromptPlayerName()
+        {
+            do
+            {
+                goHunter.Name = Console.ReadLine();
+                if (goHunter.ValidationError != "")
+                {
+                    Console.WriteLine("\t" + goHunter.ValidationError);
+                }
+            } while (goHunter.ValidationError != ""); //repeat only if input is invalid
         }
     }
 }

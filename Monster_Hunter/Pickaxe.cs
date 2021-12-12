@@ -42,5 +42,10 @@ namespace Monster_Hunter
                 throw new Exception("<ERROR> ", e);
             }
         }
+
+        public override string ToString()
+        {
+            return "[Pickaxe]";
+        }
     }
 }

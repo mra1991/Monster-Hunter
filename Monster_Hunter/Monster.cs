@@ -80,7 +80,18 @@ namespace Monster_Hunter
             if(GoMap.GoHunter.PosX == piX && GoMap.GoHunter.PosY == piY)
             {
                 string attackLog = "A monster just attacked the hunter ";
-                GoMap.GoHunter.TakeDamage(this.Attack);
+                int iDamageToHunter = this.Attack - GoMap.GoHunter.Armor;
+                //if the hunter is equipped with a shield, the damage is reduced by the shield's strength
+                if(goMap.GoHunter.GoGadget is Shield)
+                {
+                    iDamageToHunter -= (goMap.GoHunter.GoGadget as Shield).DefenceStrength;
+                    if (goMap.GoHunter.GoGadget.Break()) //check if the shield breaks after being used
+                    {
+                        goMap.GoHunter.GoGadget = null; //throw the shield out
+                        goMap.GoHunter.gsAttackLogs.Add("Your shield broke while a monster was attacking you.");
+                    }
+                }
+                GoMap.GoHunter.TakeDamage(iDamageToHunter);
                 if (GoMap.GoHunter.IsDead)
                 {
                     attackLog += "and killed him.";

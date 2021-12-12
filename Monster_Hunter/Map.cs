@@ -122,6 +122,8 @@ namespace Monster_Hunter
         private Monsters goMonsters;
         public Hunter GoHunter { get => goHunter; }
         public Monsters GoMonsters { get => goMonsters; }
+        private int giMapFileIndex = 0;
+        public int MapFileIndex { get => giMapFileIndex; }
 
         //private boolean method that gets string for filename and loads the map from that file into the two dimentional char array
         //If the map is loaded successfully returns true, otherwise returns false. 
